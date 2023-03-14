@@ -19,6 +19,7 @@ return new class extends Migration
             $table->float('price');
             $table->string('currency');
             $table->text('plan_id');
+            $table->string('product_id');
             $table->enum('status',['active','inactive'])->default('active');
             $table->timestamps();
         });

@@ -77,7 +77,8 @@ class PayPalController extends Controller
             }
 
             // Call the provider and add the product, daily plan and setup subscription
-            $response = $this->provider->addBillingPlanById($request->plan_id)
+            $response = $this->provider->addProductById($plan->product_id)
+                                        ->addBillingPlanById($plan->plan_id)
                                         ->setReturnAndCancelUrl($return_url, $cancel_url)
                                         ->setupSubscription($user->name, $user->email, Carbon::now()->addMinutes(5));
             
