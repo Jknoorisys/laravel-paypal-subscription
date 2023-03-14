@@ -156,16 +156,24 @@ class PayPalController extends Controller
                 // upadate subscription details in table
                 $data = [
                     'status' => $response['status'],
-                    'start_date' => $response['start_time'],
-                    'end_date'   => $response['billing_info']['next_billing_time']
+                    'start_date' => date('Y-m-d h:i:s',strtotime($response['start_time'])),
+                    'end_date'   => date('Y-m-d h:i:s',strtotime($response['billing_info']['next_billing_time'])),
+                    'updated_at' => Carbon::now()
                 ];
 
                 $update = Subscriptions::where('subscription_id', '=', $subscription_id)->update($data);
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => trans('msg.Subscription Succesful!'),
-                ],200);
-                
+
+                if ($update) {
+                    return response()->json([
+                        'status'    => 'success',
+                        'message'   => trans('msg.Subscription Succesful!'),
+                    ],200);
+                } else {
+                    return response()->json([
+                        'status'    => 'failed',
+                        'message'   => trans('msg.error'),
+                    ],400);
+                }
             } else {
                 return response()->json([
                     'status'    => 'failed',
