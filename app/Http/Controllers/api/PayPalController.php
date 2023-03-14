@@ -147,6 +147,8 @@ class PayPalController extends Controller
         try {
              
             $subscription_id = $request->subscription_id;
+
+            // retrive subscription details
             $response = $this->provider->showSubscriptionDetails($subscription_id);
 
             if (!empty($response) && $response['status'] == 'ACTIVE') {
@@ -182,8 +184,8 @@ class PayPalController extends Controller
 
     public function cancel(Request $request)
     {
-         // Input validation
-         $validator = Validator::make($request->all(), [
+        // Input validation
+        $validator = Validator::make($request->all(), [
             'language' => [
                 'required' ,
                 Rule::in(['en','hi','ur','bn','ar','in','ms','tr','fa','fr','de','es']),
@@ -202,7 +204,10 @@ class PayPalController extends Controller
         try {
             
             $subscription_id = $request->subscription_id;
+
+            // retrive subscription details
             $response = $this->provider->showSubscriptionDetails($subscription_id);
+
             if (!empty($response) && $response['status'] == 'APPROVAL_PENDING') {
 
                 // cancel subscription
