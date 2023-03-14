@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->string('paypal_order_id');
             $table->text('paypal_url');
             $table->string('plan_id');
             $table->string('plan_name');
