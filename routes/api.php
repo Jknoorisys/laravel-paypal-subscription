@@ -18,3 +18,4 @@ use Illuminate\Support\Facades\Route;
 Route::post('subscribe' , [PayPalController::class, 'subscribe']);
 Route::any('success' , [PayPalController::class, 'success']);
 Route::any('cancel' , [PayPalController::class, 'cancel']);
+Route::any('webhook' , [PayPalController::class, 'webhook']);

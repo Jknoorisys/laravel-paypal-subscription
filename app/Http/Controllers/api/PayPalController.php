@@ -255,4 +255,68 @@ class PayPalController extends Controller
             ],500);
         }
     }
+
+    public function webhook(Request $request)
+    {
+        $payload = json_decode($request->getContent(), true);
+
+        if (isset($payload['event_type']) && $payload['event_type'] === 'BILLING.SUBSCRIPTION.UPDATED') {
+            $subscriptionId = $payload['resource']['id'];
+            $subscription = Subscriptions::where('subscription_id', $subscriptionId)->first();
+
+            if ($subscription) {
+                $status = $payload['resource']['status'];
+                $start_date = $payload['resource']['start_time'];
+                $end_date = $payload['resource']['next_billing_time'];
+
+                if ($status === 'SUSPENDED' || $status === 'CANCELLED') {
+                    $subscription->status = $status;
+                    $subscription->save();
+                }
+
+                if ($status === 'ACTIVE') {
+                    $subscription->status = $status;
+                    $subscription->start_date = $start_date;
+                    $subscription->end_date = $end_date;
+                    $subscription->save();
+                }
+            }
+        }
+
+        if (isset($payload['event_type']) && $payload['event_type'] === 'PAYMENT.SALE.COMPLETED') {
+            $subscriptionId = $payload['resource']['billing_agreement_id'];
+            $response = $this->provider->showSubscriptionDetails($subscriptionId);
+            $subscription = Subscriptions::where('subscription_id', $subscriptionId)->first();
+
+            if ($subscription) {
+                $data = [
+                    'status' => $response['status'],
+                    'start_date' => date('Y-m-d h:i:s',strtotime($response['start_time'])),
+                    'end_date'   => date('Y-m-d h:i:s',strtotime($response['billing_info']['next_billing_time'])),
+                    'updated_at' => Carbon::now()
+                ];
+
+                $update = Subscriptions::where('subscription_id', '=', $subscriptionId)->update($data);
+            }
+        }
+
+        // if (isset($payload['event_type']) && $payload['event_type'] === 'INVOICING.INVOICE.PAID') {
+        //     $invoiceId = $payload['resource']['id'];
+
+        //     $subscriptionId = $invoice['billing_info'][0]['subscription_id'];
+        //     $amount = $invoice['payments'][0]['amount']['value'];
+
+        //     $subscription = Subscriptions::where('paypal_subscription_id', $subscriptionId)->first();
+
+        //     if ($subscription) {
+        //         $subscription->paypal_last_payment_amount = $amount;
+        //         $subscription->save();
+        //     }
+        // }
+
+        return response()->json([
+            'message' => 'Webhook received',
+        ]);
+    }
+
 }
