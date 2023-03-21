@@ -276,6 +276,22 @@ class PayPalController extends Controller
                     ];
 
                     $update = Subscriptions::where('subscription_id', '=', $subscriptionId)->update($data);
+                    if ($update) {
+                        $user = User::find($subscription->user_id);
+                        $invoice_data = [
+                            'subscription_id' => $subscriptionId,
+                            'invoice_number' => (string)rand(10000, 20000),
+                            'user_name' => $user ? $user->name : '',
+                            'user_email' => $user ? $user->email : '',
+                            'plan_name' => $subscription->plan_name,
+                            'plan_price' => $subscription->price,
+                            'start_date' => date('d M Y',strtotime($response['update_time'])),
+                            'end_date'   => date('d M Y',strtotime($response['billing_info']['next_billing_time'])),
+                            'amount_paid' => $subscription->price,
+                            'currency' => $subscription->currency,
+                        ];
+                        generateInvoicePdf($invoice_data);
+                    }
                 }
                 break;
             case 'BILLING.SUBSCRIPTION.UPDATED':
