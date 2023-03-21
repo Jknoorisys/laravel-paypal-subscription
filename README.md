@@ -80,9 +80,9 @@
         <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*noLmXd6MlqY_DvaT8cQRRg.png" alt="img" >
         <p>Now, your product and plan are created. The next step is turning your plan on and implementing it in the code.</p>
     <li><h5>Create Routes</h5></li>
-        <p>Now we need to create an application route that we will test the application test transaction on. Open the route/web.php application route file and add the new routes</p>
+        <p>Now we need to create an application route that we will test the application test transaction on. Open the route/api.php application route file and add the new routes</p>
         <p>Create Controller</p>
-        <p><i>php artisan make:controller PayPalController</i></p>
+        <p><i>php artisan make:controller api/PayPalController</i></p>
         <p>Run database migrations</p>
         <p><i>php artisan migrate</i></p>
         <p>Add/Update plan details in database</p>
