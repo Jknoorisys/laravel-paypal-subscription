@@ -33,6 +33,14 @@ class PlansSeeder extends Seeder
                 'plan_id' => 'YOUR_STRIPE_PLAN_ID',
                 'created_at' => Carbon::now()
             ],
+            [
+                'name' => 'Premium',
+                'price' => 4.00,
+                'currency' => '€',
+                'product_id' => 'YOUR_STRIPE_PRODUCT_ID',
+                'plan_id' => 'YOUR_STRIPE_PLAN_ID',
+                'created_at' => Carbon::now()
+            ]
         ]);
     }
 }
